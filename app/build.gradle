@@ -25,6 +25,7 @@ private String GenerateVersionName() {
 }
 
 android {
+    namespace = "io.github.trojan_gfw.igniter"
     ndkVersion "21.3.6528147"
     compileSdkVersion project.ext.targetSdkVersion
 

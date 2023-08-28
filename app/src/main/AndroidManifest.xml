@@ -18,7 +18,6 @@
     <application
         android:name=".IgniterApplication"
         android:allowBackup="true"
-        android:extractNativeLibs="true"
         android:fullBackupContent="true"
         android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"

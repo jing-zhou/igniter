@@ -105,8 +105,9 @@
 
     <!-- Messages Preferences -->
     <string name="version_title">Version</string>
+    <string name="versionName" translatable="false">versionName</string>
     <string name="author_title">Developed by</string>
-
+    
     <!-- Sync Preferences -->
     <string name="credit_item1_title" translatable="false">Dreamacro/clash</string>
     <string name="credit_item2_title" translatable="false">eycorsican/go-tun2socks</string>

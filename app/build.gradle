@@ -2,6 +2,10 @@ plugins {
     id 'com.android.application'
 }
 
+def my_boost_dir = local_props("boost.dir")
+def my_boost_dir_libs = my_boost_dir + "/libs"
+def my_boost_dir_inc  = my_boost_dir + "/include"
+
 android {
     namespace = "io.github.trojan_gfw.igniter"
     compileSdk 33
@@ -13,6 +17,24 @@ android {
         versionCode 1
         versionName "1.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+        externalNativeBuild {
+            cmake {
+                // flags for the c++ compiler eg "-std=c++14 -frtti -fexceptions"
+                // If you set cppFlags to "-std=c++14", you may need to build your boost libraries
+                // with the same flags, depending on your compiler defaults.
+                // cppFlags "-std=c++14"
+
+                // this causes libc++_shared.so to get packaged into .apk
+                arguments '-DANDROID_STL=c++_shared'
+
+                // This is used in CMakeLists.txt so our native code can find/use (prebuilt) boost
+                arguments '-DMY_BOOST_LIBS_DIR=' + my_boost_dir_libs
+                arguments '-DMY_BOOST_INC_DIR='  + my_boost_dir_inc
+            }
+        }
     }
 
     buildTypes {
@@ -31,6 +53,7 @@ android {
         cmake {
             path file('src/main/cpp/CMakeLists.txt')
             version '3.22.1'
+
         }
     }
 
@@ -67,4 +90,16 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
+}
+
+//------------------------------------------------------------
+def local_props(key) { // reads ~ value from local.properties file
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def val = properties.getProperty(key, null)
+    if (val == null)
+        throw new GradleException("""\
+                cant find value '${key}' in file 'local.properties'.  """)
+
+    return val
 }

@@ -2,10 +2,6 @@ plugins {
     id 'com.android.application'
 }
 
-def my_boost_dir = local_props("boost.dir")
-def my_boost_dir_libs = my_boost_dir + "/libs"
-def my_boost_dir_inc  = my_boost_dir + "/include"
-
 android {
     namespace = "io.github.trojan_gfw.igniter"
     compileSdk 33
@@ -18,7 +14,10 @@ android {
         versionName "1.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            // abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            // openssl can only support one ABI type at a time,
+            // ./Configure android-arm64 --prefix=/home/wjz/projects/ignit/igniter/app/src/main/cpp/libs
+            abiFilters "arm64-v8a"
         }
         externalNativeBuild {
             cmake {
@@ -29,10 +28,6 @@ android {
 
                 // this causes libc++_shared.so to get packaged into .apk
                 arguments '-DANDROID_STL=c++_shared'
-
-                // This is used in CMakeLists.txt so our native code can find/use (prebuilt) boost
-                arguments '-DMY_BOOST_LIBS_DIR=' + my_boost_dir_libs
-                arguments '-DMY_BOOST_INC_DIR='  + my_boost_dir_inc
             }
         }
     }
@@ -62,6 +57,7 @@ android {
         renderScript = true
         viewBinding true
     }
+    ndkVersion '25.2.9519653'
 }
 
 dependencies {
@@ -92,14 +88,3 @@ dependencies {
 
 }
 
-//------------------------------------------------------------
-def local_props(key) { // reads ~ value from local.properties file
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    def val = properties.getProperty(key, null)
-    if (val == null)
-        throw new GradleException("""\
-                cant find value '${key}' in file 'local.properties'.  """)
-
-    return val
-}

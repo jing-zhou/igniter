@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.6)
 project(igniter)
 
 include(CMakePrintHelpers)
-
 add_definitions(-DENABLE_ANDROID_LOG)
 # As long as we use OpenSSL 1.1.1, we are safe
 add_definitions(-DENABLE_TLS13_CIPHERSUITES)
@@ -12,7 +11,7 @@ find_library( # Sets the name of the path variable.
           # Specifies the name of the NDK library that
           # you want CMake to locate.
           log)
-add_library(trojan
+add_library(igniter
     trojan/src/core/authenticator.cpp
     trojan/src/core/config.cpp
     trojan/src/core/log.cpp
@@ -30,18 +29,18 @@ add_library(trojan
     trojan/src/ssl/ssldefaults.cpp
     trojan/src/ssl/sslsession.cpp)
 
-target_include_directories(trojan PRIVATE
-        ${MY_BOOST_INC_DIR}
+target_include_directories(igniter PRIVATE
+        ${CMAKE_SOURCE_DIR}/libs/include
         ${CMAKE_SOURCE_DIR}/trojan/src)
-target_link_libraries(trojan
-        ${MY_BOOST_LIBS_DIR}/${ANDROID_ABI}/libboost_program_options.a
-        ${MY_BOOST_LIBS_DIR}/${ANDROID_ABI}/libboost_system.a
-        ${MY_BOOST_LIBS_DIR}/${ANDROID_ABI}/libssl.a
-        ${MY_BOOST_LIBS_DIR}/${ANDROID_ABI}/libcrypto.a
+target_link_libraries(igniter
+        ${CMAKE_SOURCE_DIR}/libs/libs/${ANDROID_ABI}/libboost_program_options.a
+        ${CMAKE_SOURCE_DIR}/libs/libs/${ANDROID_ABI}/libboost_system.a
+        ${CMAKE_SOURCE_DIR}/libs/lib/libssl.a
+        ${CMAKE_SOURCE_DIR}/libs/lib/libcrypto.a
         ${androidLogLib})
 add_library(jni-helper SHARED jni-helper.cpp)
 target_include_directories(jni-helper PRIVATE
     ${CMAKE_SOURCE_DIR}/trojan/src
     ${CMAKE_SOURCE_DIR}/libn2t/src
     ${CMAKE_SOURCE_DIR}/libs/include)
-target_link_libraries(jni-helper trojan)
+target_link_libraries(jni-helper igniter)

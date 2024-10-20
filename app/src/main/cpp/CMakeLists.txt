@@ -47,18 +47,22 @@ add_library(igniter
     trojan/src/ssl/ssldefaults.cpp
     trojan/src/ssl/sslsession.cpp)
 
+find_package(Boost REQUIRED COMPONENTS system program_options)
+include_directories(${Boost_INCLUDE_DIR})
+
 target_include_directories(igniter PRIVATE
-        ${CMAKE_SOURCE_DIR}/libs/include
-        ${CMAKE_SOURCE_DIR}/trojan/src)
+        ${CMAKE_CURRENT_LIST_DIR}/libs/include
+        ${CMAKE_CURRENT_LIST_DIR}/trojan/src)
 target_link_libraries(igniter
-        ${CMAKE_SOURCE_DIR}/libs/libs/${ANDROID_ABI}/libboost_program_options.a
-        ${CMAKE_SOURCE_DIR}/libs/libs/${ANDROID_ABI}/libboost_system.a
-        ${CMAKE_SOURCE_DIR}/libs/lib/libssl.a
-        ${CMAKE_SOURCE_DIR}/libs/lib/libcrypto.a
+        ${CMAKE_CURRENT_LIST_DIR}/libs/lib/${ANDROID_ABI}/libboost_program_options.a
+        ${CMAKE_CURRENT_LIST_DIR}/libs/lib/${ANDROID_ABI}/libboost_system.a
+        ${CMAKE_CURRENT_LIST_DIR}/libs/lib/libssl.a
+        ${CMAKE_CURRENT_LIST_DIR}/libs/lib/libcrypto.a
+        ${Boost_LIBRARIES}
         ${androidLogLib})
 add_library(jni-helper SHARED jni-helper.cpp)
 target_include_directories(jni-helper PRIVATE
-    ${CMAKE_SOURCE_DIR}/trojan/src
-    ${CMAKE_SOURCE_DIR}/libn2t/src
-    ${CMAKE_SOURCE_DIR}/libs/include)
+    ${CMAKE_CURRENT_LIST_DIR}/trojan/src
+    ${CMAKE_CURRENT_LIST_DIR}/libn2t/src
+    ${CMAKE_CURRENT_LIST_DIR}/libs/include)
 target_link_libraries(jni-helper igniter)

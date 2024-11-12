@@ -47,6 +47,7 @@ add_library(igniter
     trojan/src/ssl/ssldefaults.cpp
     trojan/src/ssl/sslsession.cpp)
 
+cmake_policy(SET CMP0167 NEW)
 find_package(Boost REQUIRED COMPONENTS system program_options)
 include_directories(${Boost_INCLUDE_DIR})
 
